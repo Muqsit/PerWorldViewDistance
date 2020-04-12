@@ -1,0 +1,9 @@
+# View distances for each world, indexed by world's folder name
+# NOTE: The maximum view distance of these view distances should be the
+# value set in server.properties.
+view-distances:
+  world: 5
+  nether: 8
+
+# The default/fallback view distance for worlds that aren't in the view-distances array.
+default-view-distance: 5
