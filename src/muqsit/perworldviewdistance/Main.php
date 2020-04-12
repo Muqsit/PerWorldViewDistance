@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace muqsit\perworldviewdistance;
 
-use pocketmine\event\entity\EntityTeleportEvent;
-use pocketmine\event\Listener;
+use muqsit\perworldviewdistance\player\PlayerManager;
 use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 
-final class Main extends PluginBase implements Listener{
+final class Main extends PluginBase{
 
 	/** @var PerWorldViewDistanceConfig */
 	private $view_distance_config;
@@ -20,9 +18,8 @@ final class Main extends PluginBase implements Listener{
 		foreach($this->getConfig()->get("view-distances") as $world => $view_distance){
 			$this->view_distance_config->setViewDistance($world, $view_distance);
 		}
-
 		if(!$this->view_distance_config->isUnnecessary()){
-			$this->getServer()->getPluginManager()->registerEvents($this, $this);
+			PlayerManager::init($this);
 		}
 	}
 
@@ -37,20 +34,5 @@ final class Main extends PluginBase implements Listener{
 	public function onPlayerJoin(PlayerJoinEvent $event) : void{
 		$player = $event->getPlayer();
 		$player->setViewDistance($this->view_distance_config->getViewDistance($player->getWorld()->getFolderName()));
-	}
-
-	/**
-	 * @param EntityTeleportEvent $event
-	 * @priority MONITOR
-	 */
-	public function onEntityTeleport(EntityTeleportEvent $event) : void{
-		$from_world = $event->getFrom()->getWorld();
-		$to_world = $event->getTo()->getWorld();
-		if($to_world !== null && $from_world !== $to_world){
-			$player = $event->getEntity();
-			if($player instanceof Player){
-				$player->setViewDistance($this->view_distance_config->getViewDistance($to_world->getFolderName()));
-			}
-		}
 	}
 }
