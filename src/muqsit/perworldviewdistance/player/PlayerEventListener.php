@@ -81,7 +81,7 @@ final class PlayerEventListener implements Listener{
 			if($player !== null && $player->isOnline()){
 				$instance = PlayerManager::get($player);
 				$instance->onRequestChunkRadius($packet->radius);
-				$this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function(int $currentTick) use($player, $instance) : void{
+				$this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function() use($player, $instance) : void{
 					if($player->isOnline()){
 						$this->checkViewDistance($player, $instance);
 					}
