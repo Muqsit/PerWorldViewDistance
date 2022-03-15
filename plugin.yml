@@ -1,5 +1,4 @@
 name: PerWorldViewDistance
-main: muqsit\perworldviewdistance\Main
+main: muqsit\perworldviewdistance\Loader
 api: 4.0.0
-lmao: 3.0
 version: 0.0.1

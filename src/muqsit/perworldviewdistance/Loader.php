@@ -8,10 +8,13 @@ use muqsit\perworldviewdistance\player\PlayerManager;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\plugin\PluginBase;
 
-final class Main extends PluginBase{
+final class Loader extends PluginBase{
 
 	/** @var PerWorldViewDistanceConfig */
 	private $view_distance_config;
+
+	/** @var PlayerManager|null */
+	private $player_manager = null;
 
 	protected function onEnable() : void{
 		$this->view_distance_config = new PerWorldViewDistanceConfig((int) $this->getConfig()->get("default-view-distance"));
@@ -19,12 +22,16 @@ final class Main extends PluginBase{
 			$this->view_distance_config->setViewDistance($world, $view_distance);
 		}
 		if(!$this->view_distance_config->isUnnecessary()){
-			PlayerManager::init($this);
+			$this->player_manager = new PlayerManager($this);
 		}
 	}
 
 	public function getViewDistanceConfig() : PerWorldViewDistanceConfig{
 		return $this->view_distance_config;
+	}
+
+	public function getPlayerManager() : ?PlayerManager{
+		return $this->player_manager;
 	}
 
 	/**

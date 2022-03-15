@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace muqsit\perworldviewdistance\player;
 
-use muqsit\perworldviewdistance\Main;
+use Error;
+use muqsit\perworldviewdistance\Loader;
 use muqsit\perworldviewdistance\PerWorldViewDistanceConfig;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
@@ -19,15 +20,19 @@ use pocketmine\world\World;
 
 final class PlayerEventListener implements Listener{
 
-	/** @var Main */
+	/** @var Loader */
 	private $plugin;
 
 	/** @var PerWorldViewDistanceConfig */
 	private $config;
 
-	public function __construct(Main $plugin, PerWorldViewDistanceConfig $config){
+	/** @var PlayerManager */
+	private $manager;
+
+	public function __construct(Loader $plugin, PerWorldViewDistanceConfig $config, PlayerManager $manager){
 		$this->plugin = $plugin;
 		$this->config = $config;
+		$this->manager = $manager;
 	}
 
 	private function checkViewDistance(Player $player, PlayerInstance $instance, ?World $world = null) : void{
@@ -48,7 +53,7 @@ final class PlayerEventListener implements Listener{
 	 * @priority MONITOR
 	 */
 	public function onPlayerLogin(PlayerLoginEvent $event) : void{
-		PlayerManager::add($event->getPlayer());
+		$this->manager->add($event->getPlayer());
 	}
 
 	/**
@@ -57,7 +62,7 @@ final class PlayerEventListener implements Listener{
 	 */
 	public function onPlayerJoin(PlayerJoinEvent $event) : void{
 		$player = $event->getPlayer();
-		$instance = PlayerManager::get($player);
+		$instance = $this->manager->get($player);
 		$instance->onJoin();
 		$this->checkViewDistance($player, $instance);
 	}
@@ -67,7 +72,7 @@ final class PlayerEventListener implements Listener{
 	 * @priority MONITOR
 	 */
 	public function onPlayerQuit(PlayerQuitEvent $event) : void{
-		PlayerManager::remove($event->getPlayer());
+		$this->manager->remove($event->getPlayer());
 	}
 
 	/**
@@ -79,7 +84,7 @@ final class PlayerEventListener implements Listener{
 		if($packet instanceof RequestChunkRadiusPacket){
 			$player = $event->getOrigin()->getPlayer();
 			if($player !== null && $player->isOnline()){
-				$instance = PlayerManager::get($player);
+				$instance = $this->manager->get($player);
 				$instance->onRequestChunkRadius($packet->radius);
 				$this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function() use($player, $instance) : void{
 					if($player->isOnline()){
@@ -97,10 +102,10 @@ final class PlayerEventListener implements Listener{
 	public function onEntityTeleport(EntityTeleportEvent $event) : void{
 		$from_world = $event->getFrom()->getWorld();
 		$to_world = $event->getTo()->getWorld();
-		if($to_world !== null && $from_world !== $to_world){
+		if($from_world !== $to_world){
 			$player = $event->getEntity();
 			if($player instanceof Player){
-				$this->checkViewDistance($player, PlayerManager::get($player), $to_world);
+				$this->checkViewDistance($player, $this->manager->get($player), $to_world);
 			}
 		}
 	}
