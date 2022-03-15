@@ -1,6 +1,8 @@
 # View distances for each world, indexed by world's folder name
-# NOTE: The maximum view distance of these view distances should be the
-# value set in server.properties.
+# NOTE: The maximum view distance of these view distances should be the value set in
+# server.properties.
+# For example, if you've set a view distance of 32 to any of these worlds, set the
+# "view-distance" property in server.properties to 32 or above.
 view-distances:
   world: 5
   nether: 8
