@@ -9,14 +9,11 @@ use pocketmine\player\Player;
 
 final class PlayerInstance{
 
-	/** @var int */
-	private $requested_view_distance;
-
-	/** @var bool */
-	private $joined = false;
+	private int $requested_view_distance;
+	private bool $joined = false;
 
 	/** @var Closure[] */
-	private $join_callbacks = [];
+	private array $join_callbacks = [];
 
 	public function __construct(Player $player){
 		$this->requested_view_distance = $player->getViewDistance();

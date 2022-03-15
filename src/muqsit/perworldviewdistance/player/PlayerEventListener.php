@@ -20,20 +20,11 @@ use pocketmine\world\World;
 
 final class PlayerEventListener implements Listener{
 
-	/** @var Loader */
-	private $plugin;
-
-	/** @var PerWorldViewDistanceConfig */
-	private $config;
-
-	/** @var PlayerManager */
-	private $manager;
-
-	public function __construct(Loader $plugin, PerWorldViewDistanceConfig $config, PlayerManager $manager){
-		$this->plugin = $plugin;
-		$this->config = $config;
-		$this->manager = $manager;
-	}
+	public function __construct(
+		private Loader $plugin,
+		private PerWorldViewDistanceConfig $config,
+		private PlayerManager $manager
+	){}
 
 	private function checkViewDistance(Player $player, PlayerInstance $instance, ?World $world = null) : void{
 		$max_view_distance = $this->config->getViewDistance(($world ?? $player->getWorld())->getFolderName());

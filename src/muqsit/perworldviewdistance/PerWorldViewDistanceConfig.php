@@ -9,15 +9,12 @@ use pocketmine\Server;
 
 final class PerWorldViewDistanceConfig{
 
-	/** @var int */
-	private $default;
-
 	/** @var int[] */
-	private $view_distances = [];
+	private array $view_distances = [];
 
-	public function __construct(int $default){
-		$this->default = $default;
-	}
+	public function __construct(
+		private int $default
+	){}
 
 	public function isUnnecessary() : bool{
 		return $this->default === Server::getInstance()->getViewDistance() && count($this->view_distances) === 0;
