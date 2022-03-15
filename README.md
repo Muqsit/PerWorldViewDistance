@@ -1,4 +1,6 @@
 # PerWorldViewDistance
+[![](https://poggit.pmmp.io/shield.state/PerWorldViewDistance)](https://poggit.pmmp.io/p/PerWorldViewDistance)
+
 This plugin lets you configure a per-world cap on render distance.
 
 ## Behaviour Example
